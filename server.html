@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Servidores Paul</title>
+  <style>
+    body{
+      margin:0;
+      font-family:"Segoe UI",Roboto,system-ui,sans-serif;
+      background:#0a0f1c;
+      color:#e6edf3;
+    }
+    header{
+      padding:20px;
+      text-align:center;
+      font-size:22px;
+      font-weight:700;
+      border-bottom:1px solid #1f2a3a;
+      background:linear-gradient(90deg,#0d1117,#161b22,#0d1117);
+      position:sticky;top:0;z-index:10;
+      color:#58a6ff;
+      letter-spacing:1px;
+      text-shadow:0 0 8px #58a6ff66;
+    }
+    .subheader{
+      text-align:center;
+      font-size:16px;
+      padding:10px;
+      background:#111827;
+      color:#8b949e;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+      gap:24px;
+      padding:30px;
+      max-width:1500px;
+      margin:auto;
+    }
+    .card{
+      background:#111827;
+      border:1px solid #1f2a3a;
+      border-radius:18px;
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      transition:transform .25s ease, box-shadow .25s;
+      box-shadow:0 0 18px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg,transparent 60%,rgba(88,166,255,0.08));
+      pointer-events:none;
+      border-radius:18px;
+    }
+    .card:hover{
+      transform:translateY(-6px) scale(1.02);
+      box-shadow:0 0 30px rgba(88,166,255,.35);
+    }
+    .top{display:flex;align-items:center;gap:14px;}
+    .icon{
+      flex-shrink:0;
+      width:50px;height:50px;
+      border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      background:#1c2233;
+      box-shadow:0 0 12px rgba(88,166,255,.3) inset;
+    }
+    .icon svg{width:28px;height:28px;stroke:#58a6ff}
+    .info{flex:1}
+    .name{font-weight:600;font-size:16px;color:#fff}
+    .meta{font-size:13px;color:#8b949e}
+    .price{font-size:14px;font-weight:600;margin-top:4px;color:#58a6ff}
+    .raspi{font-size:12px;color:#3fb950;margin-top:2px;font-weight:600}
+    .status{
+      padding:4px 10px;border-radius:999px;
+      font-size:12px;font-weight:600;
+      display:inline-flex;align-items:center;gap:6px;
+      margin-top:6px;
+      animation:pulse 2s infinite;
+    }
+    .dot{width:8px;height:8px;border-radius:50%}
+    .online{background:#238636;color:#fff}
+    .online .dot{background:#2ea043}
+    .offline{background:#da3633;color:#fff}
+    .offline .dot{background:#f85149}
+    .maint{background:#d29922;color:#161b22}
+    .maint .dot{background:#e3b341}
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(88,166,255,.4)}
+      70%{box-shadow:0 0 0 8px rgba(88,166,255,0)}
+      100%{box-shadow:0 0 0 0 rgba(88,166,255,0)}
+    }
+
+    /* barras de recursos */
+    .resources{display:flex;flex-direction:column;gap:6px;font-size:12px;display:none;}
+    .bar{height:6px;background:#1c2233;border-radius:6px;overflow:hidden}
+    .bar span{display:block;height:100%;background:linear-gradient(90deg,#58a6ff,#3fb950);border-radius:6px}
+
+    /* botones mostrar/ocultar */
+    .toggle-btn{
+      font-size:12px;
+      color:#58a6ff;
+      cursor:pointer;
+      text-align:right;
+      font-weight:600;
+      margin-top:-6px;
+      margin-bottom:6px;
+      transition:0.2s;
+    }
+    .toggle-btn:hover{color:#3fb950;}
+
+    /* Totales */
+    .totales{
+      max-width:700px;
+      margin:40px auto;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+    .box{
+      background:#111827;
+      border:1px solid #1f2a3a;
+      border-radius:16px;
+      padding:20px;
+      text-align:center;
+      box-shadow:0 0 15px rgba(88,166,255,.2);
+    }
+    .box h3{margin:0 0 10px;color:#58a6ff;font-size:18px;text-shadow:0 0 4px #58a6ff55}
+    .total-bruto #total-bruto,
+    .total-neto #total-neto{font-size:26px;font-weight:700;color:#3fb950}
+    .gastos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+    .gasto-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:#161b22;border:1px solid #1f2a3a;box-shadow:0 0 12px rgba(0,0,0,.3)}
+    .gasto-card .icono{font-size:26px}
+    .gasto-card .label{font-size:14px;color:#8b949e}
+    .gasto-card .valor{font-size:18px;font-weight:600;color:#da3633}
+    .total-gastos #gastos-totales{font-size:22px;font-weight:600;color:#d29922}
+    .energia-red{display:flex;justify-content:space-around;font-size:16px;font-weight:600;gap:20px;color:#58a6ff}
+
+    /* gráfico */
+    .grafico-box{
+      max-width:900px;
+      margin:40px auto;
+      padding:20px;
+      background:#111827;
+      border:1px solid #1f2a3a;
+      border-radius:18px;
+      box-shadow:0 0 15px rgba(88,166,255,.2);
+    }
+    .grafico-box h3{text-align:center;margin-bottom:20px;color:#58a6ff;}
+
+    footer{
+      text-align:center;
+      margin:40px 0 20px 0;
+      color:#8b949e;
+      font-size:14px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+    }
+    footer img{height:24px;}
+  </style>
+</head>
+<body>
+  <header>⚡ Servidores Paul ⚡<br>(Raspberry Pi 3) </header>
+  <div class="subheader">📅 Octubre 2025</div>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="totales">
+    <div class="box total-bruto">
+      <h3>Total Bruto</h3>
+      <div id="total-bruto"></div>
+    </div>
+
+    <div class="gastos-grid">
+      <div class="gasto-card luz">
+        <div class="icono">💡</div>
+        <div class="info">
+          <div class="label">Luz</div>
+          <div class="valor" id="gasto-luz"></div>
+        </div>
+      </div>
+      <div class="gasto-card internet">
+        <div class="icono">🌐</div>
+        <div class="info">
+          <div class="label">Internet (800Mb)</div>
+          <div class="valor" id="gasto-internet"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box total-gastos">
+      <h3>Total Gastos Fijos</h3>
+      <div id="gastos-totales"></div>
+    </div>
+
+    <div class="box energia-red">
+      <div class="energia">⚡ <span id="energia-total"></span> mWh</div>
+      <div class="red">📡 <span id="red-total"></span> MB transferencia</div>
+    </div>
+
+    <div class="box total-neto">
+      <h3>Total Neto</h3>
+      <div id="total-neto"></div>
+    </div>
+  </div>
+
+<!-- -
+  <div class="grafico-box">
+    <h3>📊 Evolución de Costos 2025</h3>
+    <canvas id="chart"></canvas>
+  </div>
+-->
+  <footer>
+    Hecho por Skeleton.cl
+    <img src="https://skeleton.cl/logo/logo-skeleton.svg" alt="Skeleton Logo">
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const data=[
+      {name:'teatrogalia.cl',raspi:'RPi3B1',client:'Teatro Galia',status:'online',price:10000,cpu:65,ram:48,energy:30},
+      //{name:'serfomar.cl',raspi:'RPi3B2',client:'Serfomar',status:'online',price:15000,cpu:20,ram:60,energy:45},
+      {name:'kadapropiedades.cl',raspi:'RPi3B3',client:'Kada Propiedades',status:'online',price:16000,cpu:0,ram:0,energy:0},
+      //{name:'regenhauspropiedades.cl',raspi:'RPi3B4',client:'Regenhaus',status:'online',price:12000,cpu:75,ram:72,energy:50},
+      //{name:'monteranco.com',raspi:'RPi3B5',client:'Monteranco',status:'online',price:2000,cpu:10,ram:20,energy:15},
+      //{name:'hosteltorobayo.cl',raspi:'RPi3B6',client:'Hostel Torobayo',status:'online',price:12000,cpu:42,ram:53,energy:28},
+      //{name:'sa.cl',raspi:'RPi3B7',client:'SA Ltda',status:'online',price:12000,cpu:15,ram:25,energy:10}
+    ];
+
+    const GASTO_LUZ = 10000;
+    const GASTO_INTERNET = 15000;
+    const energiaTotal = 1250; // mWh
+    const redTotal = 9800; // MB
+
+    const grid=document.getElementById('grid');
+
+    function renderServidores(){
+      grid.innerHTML='';
+      data.forEach((s,i)=>{
+        const card=document.createElement('div');
+        card.className='card';
+        card.innerHTML=`
+          <div class="top">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <rect x="3" y="4" width="18" height="4" rx="1.5"/>
+                <rect x="3" y="10" width="18" height="4" rx="1.5"/>
+                <rect x="3" y="16" width="18" height="4" rx="1.5"/>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="name">${s.name}</div>
+              <div class="raspi">${s.raspi}</div>
+              <div class="meta">${s.client}</div>
+              <div class="price">$${s.price.toLocaleString('es-CL')}</div>
+              <div class="status ${s.status}"><span class="dot"></span>${s.status}</div>
+            </div>
+          </div>
+          <div class="toggle-btn" onclick="toggleDetails(${i})">Mostrar detalles</div>
+          <div class="resources" id="res-${i}">
+            <div>CPU ${s.cpu}%<div class="bar"><span style="width:${s.cpu}%"></span></div></div>
+            <div>RAM ${s.ram}%<div class="bar"><span style="width:${s.ram}%"></span></div></div>
+            <div>Energía ${s.energy}%<div class="bar"><span style="width:${s.energy}%"></span></div></div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleDetails(idx){
+      const res=document.getElementById(`res-${idx}`);
+      const btn=res.previousElementSibling;
+      if(res.style.display==='flex'){
+        res.style.display='none';
+        btn.textContent='Mostrar detalles';
+      }else{
+        res.style.display='flex';
+        btn.textContent='Ocultar detalles';
+      }
+    }
+
+    function renderTotales(){
+      let total = data.reduce((acc, s) => acc + s.price, 0);
+      const gastosTotales = GASTO_LUZ + GASTO_INTERNET;
+      const neto = total - gastosTotales;
+
+      document.getElementById('total-bruto').textContent = `$${total.toLocaleString('es-CL')}`;
+      document.getElementById('gasto-luz').textContent = `$${GASTO_LUZ.toLocaleString('es-CL')}`;
+      document.getElementById('gasto-internet').textContent = `$${GASTO_INTERNET.toLocaleString('es-CL')}`;
+      document.getElementById('gastos-totales').textContent = `$${gastosTotales.toLocaleString('es-CL')}`;
+      document.getElementById('total-neto').textContent = `$${neto.toLocaleString('es-CL')}`;
+      document.getElementById('energia-total').textContent = energiaTotal.toLocaleString('es-CL');
+      document.getElementById('red-total').textContent = redTotal.toLocaleString('es-CL');
+    }
+
+    function renderChart(){
+      const ctx=document.getElementById('chart').getContext('2d');
+      const meses=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+      const luzMeses = meses.map(()=>Math.floor(Math.random() * 5000 + 8000));
+      const internetMeses = meses.map(()=>Math.floor(Math.random() * 8000 + 12000));
+      const servidoresMeses = meses.map((m,i)=>10000+(i*2000)); // simulación
+
+      new Chart(ctx,{
+        type:'line',
+        data:{
+          labels:meses,
+          datasets:[
+            {label:'Servidores',data:servidoresMeses,borderColor:'#58a6ff',backgroundColor:'#58a6ff55',tension:0.3},
+            {label:'Luz',data:luzMeses,borderColor:'#f85149',backgroundColor:'#f8514955',tension:0.3},
+            {label:'Internet',data:internetMeses,borderColor:'#3fb950',backgroundColor:'#3fb95055',tension:0.3}
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{labels:{color:'#e6edf3'}}},
+          scales:{
+            x:{ticks:{color:'#8b949e'}},
+            y:{ticks:{color:'#8b949e'}}
+          }
+        }
+      });
+    }
+
+    renderServidores();
+    renderTotales();
+    renderChart();
+  </script>
+</body>
+</html>
