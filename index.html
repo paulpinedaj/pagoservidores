@@ -63,7 +63,7 @@
       transform:translateY(-6px) scale(1.02);
       box-shadow:0 0 30px rgba(88,166,255,.35);
     }
-    .top{display:flex;align-items:center;gap:14px;}
+    .top{display:flex;align-items:flex-start;gap:14px;}
     .icon{
       flex-shrink:0;
       width:50px;height:50px;
@@ -73,103 +73,100 @@
       box-shadow:0 0 12px rgba(88,166,255,.3) inset;
     }
     .icon svg{width:28px;height:28px;stroke:#58a6ff}
-    .info{flex:1}
+    .info{flex:1;display:flex;flex-direction:column;gap:6px}
     .name{font-weight:600;font-size:16px;color:#fff}
     .meta{font-size:13px;color:#8b949e}
     .price{font-size:14px;font-weight:600;margin-top:4px;color:#58a6ff}
     .raspi{font-size:12px;color:#3fb950;margin-top:2px;font-weight:600}
+    
     .status{
-      padding:4px 10px;border-radius:999px;
-      font-size:12px;font-weight:600;
-      display:inline-flex;align-items:center;gap:6px;
-      margin-top:6px;
-      animation:pulse 2s infinite;
-    }
-    .dot{width:8px;height:8px;border-radius:50%}
-    .online{background:#238636;color:#fff}
-    .online .dot{background:#2ea043}
-    .offline{background:#da3633;color:#fff}
-    .offline .dot{background:#f85149}
-    .maint{background:#d29922;color:#161b22}
-    .maint .dot{background:#e3b341}
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 0 rgba(88,166,255,.4)}
-      70%{box-shadow:0 0 0 8px rgba(88,166,255,0)}
-      100%{box-shadow:0 0 0 0 rgba(88,166,255,0)}
-    }
-
-    /* barras de recursos */
-    .resources{display:flex;flex-direction:column;gap:6px;font-size:12px;display:none;}
-    .bar{height:6px;background:#1c2233;border-radius:6px;overflow:hidden}
-    .bar span{display:block;height:100%;background:linear-gradient(90deg,#58a6ff,#3fb950);border-radius:6px}
-
-    /* botones mostrar/ocultar */
-    .toggle-btn{
-      font-size:12px;
-      color:#58a6ff;
-      cursor:pointer;
-      text-align:right;
-      font-weight:600;
-      margin-top:-6px;
-      margin-bottom:6px;
-      transition:0.2s;
-    }
-    .toggle-btn:hover{color:#3fb950;}
-
-    /* Totales */
-    .totales{
-      max-width:700px;
-      margin:40px auto;
       display:flex;
-      flex-direction:column;
-      gap:20px;
+      align-items:center;
+      gap:6px;
+      font-weight:600;
+      font-size:12px;
     }
-    .box{
-      background:#111827;
-      border:1px solid #1f2a3a;
-      border-radius:16px;
-      padding:20px;
+    .status .dot {
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      box-shadow:0 0 6px #000;
+    }
+    .online .dot { background:#2ea043; box-shadow:0 0 8px #2ea043aa; animation:led-pulse 2s infinite; }
+    .offline .dot { background:#f85149; box-shadow:0 0 8px #f85149aa; }
+    @keyframes led-pulse{
+      0%,100% { box-shadow:0 0 4px #2ea043aa; }
+      50% { box-shadow:0 0 14px #2ea043bb; }
+    }
+
+    .raspi-bar {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+    }
+    .raspi-bar .label { width:70px; }
+    .raspi-bar .bar-container {
+      flex:1;
+      background:#1c2233;
+      border-radius:8px;
+      height:10px;
+      overflow:hidden;
+      box-shadow: inset 0 0 4px #000;
+    }
+    .raspi-bar .bar-fill {
+      height:100%;
+      border-radius:8px;
+      transition: width 0.3s;
+      display:block;
+    }
+    .cpu-bar .bar-fill { background:linear-gradient(90deg,#58a6ff,#3fb950); }
+    .ram-bar .bar-fill { background:linear-gradient(90deg,#ff9f1a,#ff3f1a); }
+    .consumo-bar .bar-fill { background:linear-gradient(90deg,#3fb950,#58a6ff); }
+    .temp-bar .bar-fill { background:linear-gradient(90deg,#da3633,#ff9f1a); }
+
+    .proyectos-list { display:flex;flex-direction:column;gap:6px; }
+    .proyecto{display:flex;justify-content:space-between;padding:6px 10px;border-radius:6px;background:#161b22;font-size:13px;}
+    .proyecto span.tick { color:#3fb950;font-weight:700; }
+
+    .toggle-btn, .power-btn{
+      font-size:13px;
+      color:#58a6ff;
+      font-weight:600;
+      padding:6px 12px;
+      border-radius:8px;
+      border:1px solid #58a6ff;
+      cursor:pointer;
       text-align:center;
-      box-shadow:0 0 15px rgba(88,166,255,.2);
+      transition:all 0.2s;
+      width:fit-content;
+      margin-top:6px;
     }
+    .toggle-btn:hover, .power-btn:hover{
+      background:#3fb950;
+      border-color:#3fb950;
+      color:#fff;
+    }
+
+    .totales{max-width:700px;margin:40px auto;display:flex;flex-direction:column;gap:20px;}
+    .box{background:#111827;border:1px solid #1f2a3a;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 15px rgba(88,166,255,.2);}
     .box h3{margin:0 0 10px;color:#58a6ff;font-size:18px;text-shadow:0 0 4px #58a6ff55}
-    .total-bruto #total-bruto,
-    .total-neto #total-neto{font-size:26px;font-weight:700;color:#3fb950}
+    .total-bruto #total-bruto,.total-neto #total-neto{font-size:26px;font-weight:700;color:#3fb950}
     .gastos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
     .gasto-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:#161b22;border:1px solid #1f2a3a;box-shadow:0 0 12px rgba(0,0,0,.3)}
     .gasto-card .icono{font-size:26px}
     .gasto-card .label{font-size:14px;color:#8b949e}
     .gasto-card .valor{font-size:18px;font-weight:600;color:#da3633}
+    .gasto-card .nota{font-size:11px;color:#8b949e;margin-top:4px}
     .total-gastos #gastos-totales{font-size:22px;font-weight:600;color:#d29922}
     .energia-red{display:flex;justify-content:space-around;font-size:16px;font-weight:600;gap:20px;color:#58a6ff}
-
-    /* gráfico */
-    .grafico-box{
-      max-width:900px;
-      margin:40px auto;
-      padding:20px;
-      background:#111827;
-      border:1px solid #1f2a3a;
-      border-radius:18px;
-      box-shadow:0 0 15px rgba(88,166,255,.2);
-    }
-    .grafico-box h3{text-align:center;margin-bottom:20px;color:#58a6ff;}
-
-    footer{
-      text-align:center;
-      margin:40px 0 20px 0;
-      color:#8b949e;
-      font-size:14px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:10px;
-    }
+    footer{text-align:center;margin:40px 0 20px;color:#8b949e;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;}
     footer img{height:24px;}
+    .resources{display:none;flex-direction:column;gap:6px;margin-top:10px;}
   </style>
 </head>
 <body>
-  <header>⚡ Servidores Paul ⚡<br>(Raspberry Pi 3) </header>
+  <header>⚡ Servidores Paul ⚡<br>(Raspberry Pi & Red)</header>
   <div class="subheader">📅 Octubre 2025</div>
 
   <main class="grid" id="grid"></main>
@@ -179,13 +176,13 @@
       <h3>Total Bruto</h3>
       <div id="total-bruto"></div>
     </div>
-
     <div class="gastos-grid">
       <div class="gasto-card luz">
         <div class="icono">💡</div>
         <div class="info">
           <div class="label">Luz</div>
           <div class="valor" id="gasto-luz"></div>
+          <div class="nota">Cálculo: (W/1000) × 24h × 30d × $120</div>
         </div>
       </div>
       <div class="gasto-card internet">
@@ -196,142 +193,121 @@
         </div>
       </div>
     </div>
-
     <div class="box total-gastos">
       <h3>Total Gastos Fijos</h3>
       <div id="gastos-totales"></div>
     </div>
-
     <div class="box energia-red">
-      <div class="energia">⚡ <span id="energia-total"></span> mWh</div>
+      <div class="energia">⚡ <span id="energia-total"></span></div>
       <div class="red">📡 <span id="red-total"></span> MB transferencia</div>
     </div>
-
     <div class="box total-neto">
       <h3>Total Neto</h3>
       <div id="total-neto"></div>
     </div>
   </div>
 
-<!-- -
-  <div class="grafico-box">
-    <h3>📊 Evolución de Costos 2025</h3>
-    <canvas id="chart"></canvas>
-  </div>
--->
   <footer>
     Hecho por Skeleton.cl
     <img src="https://skeleton.cl/logo/logo-skeleton.svg" alt="Skeleton Logo">
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const data=[
-      {name:'teatrogalia.cl',raspi:'RPi3B1',client:'Teatro Galia',status:'online',price:10000,cpu:65,ram:48,energy:30},
-      //{name:'serfomar.cl',raspi:'RPi3B2',client:'Serfomar',status:'online',price:15000,cpu:20,ram:60,energy:45},
-      {name:'kadapropiedades.cl',raspi:'RPi3B3',client:'Kada Propiedades',status:'online',price:16000,cpu:0,ram:0,energy:0},
-      //{name:'regenhauspropiedades.cl',raspi:'RPi3B4',client:'Regenhaus',status:'online',price:12000,cpu:75,ram:72,energy:50},
-      //{name:'monteranco.com',raspi:'RPi3B5',client:'Monteranco',status:'online',price:2000,cpu:10,ram:20,energy:15},
-      //{name:'hosteltorobayo.cl',raspi:'RPi3B6',client:'Hostel Torobayo',status:'online',price:12000,cpu:42,ram:53,energy:28},
-      //{name:'sa.cl',raspi:'RPi3B7',client:'SA Ltda',status:'online',price:12000,cpu:15,ram:25,energy:10}
-    ];
+<script>
+  const raspberries = [
+    {id:"RPi3B1 - Python / Django",status:"online",consumoActual:4,consumoMax:12,cpu:3,temp:48,ramUsed:350,ramTotal:906,
+      proyectos:[{name:"teatrogalia.cl",client:"Teatro Galia",price:10000},{name:"kadapropiedades.cl",client:"Kada Propiedades",price:16000},{name:"propiedadesregenhaus.cl",client:"Propiedades Regenhaus",price:13000},{name:"Monteranco.com",client:"Estudio Monteranco",price:2000}]},
+    {id:"RPi3B2",status:"offline",consumoActual:4,consumoMax:12,cpu:3,temp:45,ramUsed:300,ramTotal:906,proyectos:[{name:"serfomarapp.cl",client:"Serfomar",price:15000}]},
+    {id:"RPi3B3",status:"offline",consumoActual:0,consumoMax:12,cpu:0,temp:0,ramUsed:0,ramTotal:906,proyectos:[]},
+    {id:"RPi5 - Python / Django",status:"offline",consumoActual:4,consumoMax:12,cpu:4,temp:50,ramUsed:380,ramTotal:906,proyectos:[{name:"alontopapp.cl",client:"Alontop",price:0}]},
+    {id:"TP-Link TL-SG10105E Switch",status:"online",consumoActual:3,consumoMax:5,cpu:0,temp:32,ramUsed:0,ramTotal:0,proyectos:[]},
+    {id:"XLS-PON NOT HG5853SF",status:"online",consumoActual:10,consumoMax:24,cpu:0,temp:34,ramUsed:0,ramTotal:0,proyectos:[]},
+    {id:"Router WiFi Genérico",status:"online",consumoActual:8,consumoMax:12,cpu:0,temp:35,ramUsed:0,ramTotal:0,proyectos:[]},
+    {id:"Apple iMac 27'' 2020 ",status:"offline",consumoActual:90,consumoMax:200,cpu:3,temp:40,ramUsed:8000,ramTotal:16000,proyectos:[]},
+  ];
 
-    const GASTO_LUZ = 10000;
-    const GASTO_INTERNET = 15000;
-    const energiaTotal = 1250; // mWh
-    const redTotal = 9800; // MB
+  const COSTO_KWH = 120;
+  const GASTO_INTERNET = 15000;
+  const redTotal = 9800;
+  const grid = document.getElementById('grid');
 
-    const grid=document.getElementById('grid');
-
-    function renderServidores(){
-      grid.innerHTML='';
-      data.forEach((s,i)=>{
-        const card=document.createElement('div');
-        card.className='card';
-        card.innerHTML=`
-          <div class="top">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <rect x="3" y="4" width="18" height="4" rx="1.5"/>
-                <rect x="3" y="10" width="18" height="4" rx="1.5"/>
-                <rect x="3" y="16" width="18" height="4" rx="1.5"/>
-              </svg>
-            </div>
-            <div class="info">
-              <div class="name">${s.name}</div>
-              <div class="raspi">${s.raspi}</div>
-              <div class="meta">${s.client}</div>
-              <div class="price">$${s.price.toLocaleString('es-CL')}</div>
-              <div class="status ${s.status}"><span class="dot"></span>${s.status}</div>
-            </div>
+  function renderRaspberries(){
+    grid.innerHTML = '';
+    raspberries.forEach((rpi,i)=>{
+      const porcentajeConsumo = rpi.consumoMax>0 ? ((rpi.consumoActual/rpi.consumoMax)*100).toFixed(1) : 0;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="top">
+          <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="4" rx="1.5"/><rect x="3" y="10" width="18" height="4" rx="1.5"/><rect x="3" y="16" width="18" height="4" rx="1.5"/>
+          </svg></div>
+          <div class="info">
+            <div class="name">${rpi.id}</div>
+            <div class="status ${rpi.status}"><span class="dot"></span>${rpi.status}</div>
+            <div class="raspi-bar consumo-bar"><div class="label">Consumo</div><div class="bar-container"><span class="bar-fill" style="width:${porcentajeConsumo}%"></span></div><div>${rpi.consumoActual}W / ${rpi.consumoMax}W</div></div>
+            ${rpi.cpu>0?`<div class="raspi-bar cpu-bar"><div class="label">CPU</div><div class="bar-container"><span class="bar-fill" style="width:${rpi.cpu}%"></span></div><div>${rpi.cpu}%</div></div>`:""}
+            ${rpi.temp>0?`<div class="raspi-bar temp-bar"><div class="label">Temp</div><div class="bar-container"><span class="bar-fill" style="width:${Math.min(rpi.temp,100)}%"></span></div><div>${rpi.temp}°C</div></div>`:""}
+            ${rpi.ramTotal>0?`<div class="raspi-bar ram-bar"><div class="label">RAM</div><div class="bar-container"><span class="bar-fill" style="width:${(rpi.ramUsed/rpi.ramTotal*100).toFixed(1)}%"></span></div><div>${rpi.ramUsed}MB / ${rpi.ramTotal}MB</div></div>`:""}
           </div>
-          <div class="toggle-btn" onclick="toggleDetails(${i})">Mostrar detalles</div>
-          <div class="resources" id="res-${i}">
-            <div>CPU ${s.cpu}%<div class="bar"><span style="width:${s.cpu}%"></span></div></div>
-            <div>RAM ${s.ram}%<div class="bar"><span style="width:${s.ram}%"></span></div></div>
-            <div>Energía ${s.energy}%<div class="bar"><span style="width:${s.energy}%"></span></div></div>
-          </div>`;
-        grid.appendChild(card);
-      });
-    }
+        </div>
+        <div class="power-btn" onclick="togglePower(${i})">${rpi.status==='online'?'Apagar':'Encender'}</div>
+        <div class="toggle-btn" onclick="toggleDetails(${i})">Mostrar proyectos</div>
+        <div class="resources" id="res-${i}">
+          <div class="proyectos-list">
+            ${rpi.proyectos.length>0?rpi.proyectos.map(p=>`<div class="proyecto"><div>${p.name} - ${p.client}</div><span class="tick">✔</span></div>`).join(''):"<div>No hay proyectos</div>"}
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
 
-    function toggleDetails(idx){
-      const res=document.getElementById(`res-${idx}`);
-      const btn=res.previousElementSibling;
-      if(res.style.display==='flex'){
-        res.style.display='none';
-        btn.textContent='Mostrar detalles';
-      }else{
-        res.style.display='flex';
-        btn.textContent='Ocultar detalles';
-      }
-    }
+  function toggleDetails(idx){
+    const res = document.getElementById(`res-${idx}`);
+    const btn = res.previousElementSibling;
+    if(res.style.display==='flex'){res.style.display='none';btn.textContent='Mostrar proyectos';}
+    else{res.style.display='flex';btn.textContent='Ocultar proyectos';}
+  }
 
-    function renderTotales(){
-      let total = data.reduce((acc, s) => acc + s.price, 0);
-      const gastosTotales = GASTO_LUZ + GASTO_INTERNET;
-      const neto = total - gastosTotales;
-
-      document.getElementById('total-bruto').textContent = `$${total.toLocaleString('es-CL')}`;
-      document.getElementById('gasto-luz').textContent = `$${GASTO_LUZ.toLocaleString('es-CL')}`;
-      document.getElementById('gasto-internet').textContent = `$${GASTO_INTERNET.toLocaleString('es-CL')}`;
-      document.getElementById('gastos-totales').textContent = `$${gastosTotales.toLocaleString('es-CL')}`;
-      document.getElementById('total-neto').textContent = `$${neto.toLocaleString('es-CL')}`;
-      document.getElementById('energia-total').textContent = energiaTotal.toLocaleString('es-CL');
-      document.getElementById('red-total').textContent = redTotal.toLocaleString('es-CL');
-    }
-
-    function renderChart(){
-      const ctx=document.getElementById('chart').getContext('2d');
-      const meses=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-      const luzMeses = meses.map(()=>Math.floor(Math.random() * 5000 + 8000));
-      const internetMeses = meses.map(()=>Math.floor(Math.random() * 8000 + 12000));
-      const servidoresMeses = meses.map((m,i)=>10000+(i*2000)); // simulación
-
-      new Chart(ctx,{
-        type:'line',
-        data:{
-          labels:meses,
-          datasets:[
-            {label:'Servidores',data:servidoresMeses,borderColor:'#58a6ff',backgroundColor:'#58a6ff55',tension:0.3},
-            {label:'Luz',data:luzMeses,borderColor:'#f85149',backgroundColor:'#f8514955',tension:0.3},
-            {label:'Internet',data:internetMeses,borderColor:'#3fb950',backgroundColor:'#3fb95055',tension:0.3}
-          ]
-        },
-        options:{
-          responsive:true,
-          plugins:{legend:{labels:{color:'#e6edf3'}}},
-          scales:{
-            x:{ticks:{color:'#8b949e'}},
-            y:{ticks:{color:'#8b949e'}}
-          }
-        }
-      });
-    }
-
-    renderServidores();
+  function togglePower(idx){
+    const dev = raspberries[idx];
+    dev.status = dev.status==='online'?'offline':'online';
+    renderRaspberries();
     renderTotales();
-    renderChart();
-  </script>
+  }
+
+  function calcularEnergiaYCostos(){
+    let energiaTotal = 0;
+    raspberries.forEach(rpi=>{
+      if(rpi.status==="online" && rpi.consumoActual>0){
+        energiaTotal += (rpi.consumoActual/1000)*24*30;
+      }
+    });
+    return { energiaTotal, gastoLuz: energiaTotal*COSTO_KWH };
+  }
+
+  function renderTotales(){
+    let total = 0;
+    raspberries.forEach(r=>{
+      if(r.status === "online"){
+        total += r.proyectos.reduce((a,p)=>a+p.price,0);
+      }
+    });
+
+    document.getElementById("total-bruto").textContent = "$"+total.toLocaleString();
+    const { energiaTotal, gastoLuz } = calcularEnergiaYCostos();
+    document.getElementById("gasto-luz").textContent = "$"+Math.round(gastoLuz).toLocaleString();
+    document.getElementById("gasto-internet").textContent = "$"+GASTO_INTERNET.toLocaleString();
+    const gastosTotales = gastoLuz + GASTO_INTERNET;
+    document.getElementById("gastos-totales").textContent = "$"+Math.round(gastosTotales).toLocaleString();
+    document.getElementById("energia-total").textContent = energiaTotal.toFixed(2)+" kWh/mes";
+    document.getElementById("red-total").textContent = redTotal.toLocaleString();
+    const neto = total - gastosTotales;
+    document.getElementById("total-neto").textContent = "$"+Math.round(neto).toLocaleString();
+  }
+
+  renderRaspberries();
+  renderTotales();
+</script>
 </body>
 </html>
